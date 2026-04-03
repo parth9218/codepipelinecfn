@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Random CFN template to deploy a basic lambda function'
+Resources:
+  MyLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  MyLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: RandomLambdaFunction
+      Handler: index.handler
+      Role: !GetAtt MyLambdaRole.Arn
+      Runtime: nodejs20.x
+      Code:
+        ZipFile: |
+          exports.handler = async (event) => {
+              console.log("Event: ", event);
+              const response = {
+                  statusCode: 200,
+                  body: JSON.stringify('Hello from Random Lambda!'),
+              };
+              return response;
+          };
+
+Outputs:
+  LambdaFunctionArn:
+    Description: ARN of the deployed Lambda function
+    Value: !GetAtt MyLambdaFunction.Arn
+  LambdaRoleArn:
+    Description: Execution Role ARN of the random lambda function
+    Value: !GetAtt MyLambdaRole.Arn

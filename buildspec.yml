@@ -1,0 +1,32 @@
+version: 0.2
+
+env:
+  variables:
+    # Ensure to inject these env variables in the CodeBuild project configuration
+    ARTIFACT_BUCKET_EU: "my-pipeline-artifact-bucket-eu-west-1"
+    ARTIFACT_BUCKET_US: "my-pipeline-artifact-bucket-us-east-1"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+      
+  build:
+    commands:
+      - echo "Packaging Lambda function for eu-west-1 (Primary Region)"
+      # Package for the primary region using the artifact bucket in eu-west-1
+      - aws cloudformation package --template-file lambda.yaml --s3-bucket $ARTIFACT_BUCKET_EU --output-template-file packaged-eu-west-1.yaml
+      
+      - echo "Packaging Lambda function for us-east-1 (Secondary Region)"
+      # Package for the cross-region deployment using the artifact bucket in us-east-1
+      - aws cloudformation package --template-file lambda.yaml --s3-bucket $ARTIFACT_BUCKET_US --region us-east-1 --output-template-file packaged-us-east-1.yaml
+
+artifacts:
+  # Export multi-region compiled templates as separate artifacts
+  secondary-artifacts:
+    OutputEU:
+      files:
+        - packaged-eu-west-1.yaml
+    OutputUS:
+      files:
+        - packaged-us-east-1.yaml

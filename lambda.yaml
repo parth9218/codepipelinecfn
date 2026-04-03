@@ -18,19 +18,10 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: RandomLambdaFunction
-      Handler: index.handler
+      Handler: app.handler
       Role: !GetAtt MyLambdaRole.Arn
       Runtime: nodejs20.x
-      Code:
-        ZipFile: |
-          exports.handler = async (event) => {
-              console.log("Event: ", event);
-              const response = {
-                  statusCode: 200,
-                  body: JSON.stringify('Hello from Random Lambda!'),
-              };
-              return response;
-          };
+      Code: ./src
 
 Outputs:
   LambdaFunctionArn:

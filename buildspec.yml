@@ -3,8 +3,8 @@ version: 0.2
 env:
   variables:
     # Ensure to inject these env variables in the CodeBuild project configuration
-    ARTIFACT_BUCKET_EU: "my-pipeline-artifact-bucket-eu-west-1"
-    ARTIFACT_BUCKET_US: "my-pipeline-artifact-bucket-us-east-1"
+    ARTIFACT_BUCKET_EU: "newcfn-template-bucket-389642461016-eu-west-1-an"
+    ARTIFACT_BUCKET_US: "newcfn-template-bucket-389642461016-us-east-1-an"
 
 phases:
   install:
